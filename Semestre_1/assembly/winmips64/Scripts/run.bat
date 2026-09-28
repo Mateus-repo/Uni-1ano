@@ -92,17 +92,34 @@ goto :limpa
 
 REM ================= MIPS64 (winmips64) =================
 :mips
-if not exist "%~dp0..\winmips64.exe" goto :erro_mips
-echo  Codigo MIPS64 detectado. A montar e a abrir o winmips64 ...
-echo  (o simulador abre noutra janela; fecha-o para voltares aqui)
+if not exist "%~dp0..\asm.exe" goto :erro_mips
+echo  Codigo MIPS64 detectado.
 echo.
+echo  [1/2] a montar com asm.exe ...
 pushd "%~dp0.."
-"%~dp0..\winmips64.exe" "!FULL!"
+"%~dp0..\asm.exe" "!FULL!"
+set "ASMRC=!errorlevel!"
 popd
+if not "!ASMRC!"=="0" goto :erro_asm
+
+echo.
+echo  [2/2] simulador ...
+echo  O winmips64.exe tem de ser aberto SEM argumentos: passar-lhe o
+echo  ficheiro, ou ter um programa lembrado no winmips64.las, faz com
+echo  que crash com 0xC0000005 (ver Event Viewer - Windows Logs).
+echo  A abrir em segundo plano. Se a janela nao aparecer, apaga o
+echo  winmips64.las e abre o fonte por File - Open dentro do simulador.
+echo.
+start "" "%~dp0..\winmips64.exe"
 goto :fim
 
+:erro_asm
+echo.
+echo  [ERRO] o asm.exe reportou erros - corrige o fonte e tenta outra vez.
+goto :limpa
+
 :erro_mips
-echo  [ERRO] winmips64.exe nao encontrado na pasta acima desta.
+echo  [ERRO] asm.exe nao encontrado na pasta acima desta.
 goto :limpa
 
 REM ============================================================
