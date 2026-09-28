@@ -81,6 +81,8 @@ goto :fim
 :erro_nasm
 echo.
 echo  [ERRO] o nasm falhou - nao foi gerado nenhum executavel.
+echo  Dica: no NASM 3.x a sintaxe Intel ja e a predeterminada, por isso
+echo        a linha ".intel_syntax noprefix" da erro - apaga-a.
 goto :limpa
 
 :erro_link

@@ -6,10 +6,9 @@ CR: .word 32 0x10000 ; Enderço de registo de controlo
 DR: .word 32 0x10008 ; Enderço de registo de dados
 
     .text ; .code
-main:
-
     lwu r1, CR(r0) ; Coloco em r1 o valor do controlo
     lwu r2, DR(r0) ; Coloco em r2 o valor do data
+
     ld r4, A(r0)
     ld r5, B(r0)
     dadd r3, r4, r5
