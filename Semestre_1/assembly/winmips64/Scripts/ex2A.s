@@ -6,7 +6,7 @@ B:  .word 8
 main:
     ld r4, A(r0)
     ld r5, B(r0)
-    
+
     dadd r3, r4, r0
     dadd r4, r5, r0
     dadd r5, r3, r0
