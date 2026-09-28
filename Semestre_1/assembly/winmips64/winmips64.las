@@ -1,0 +1,1 @@
+C:\winmips64\Scripts\ex1A.s
