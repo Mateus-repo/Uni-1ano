@@ -1,0 +1,1 @@
+C:\Users\Strefiz\Documents\GitHub\Uni-1ano\Semestre_1\assembly\winmips64\Scripts\ex3A.s

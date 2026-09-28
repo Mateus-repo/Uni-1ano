@@ -2,6 +2,8 @@ global main
 
 section .text
 main:
+    sub rsp, 40
+    xor r10, r10
     mov edi, 1
     lea rsi, [rel msg]
     mov edx, msg_len

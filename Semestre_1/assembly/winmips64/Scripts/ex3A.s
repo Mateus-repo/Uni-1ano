@@ -17,5 +17,7 @@ main:
 
     sd r3, (r2) ; Coloco o resultado da soma de r3 no Data register
 
-    daddi r10, r0, 1
+    daddi r10, r0, 1 ; Coloca o valor 1 em r10 oara depois mostrar o inteiro se
+
+    sd r10, (r1) ; Ativa o controlo e mostra no terminal o valor
     halt
