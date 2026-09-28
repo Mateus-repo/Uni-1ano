@@ -1,1 +1,1 @@
-C:\winmips64\Scripts\ex1A.s
+C:\Users\Strefiz\Documents\GitHub\Uni-1ano\Semestre_1\assembly\winmips64\Scripts\ex1B.s
