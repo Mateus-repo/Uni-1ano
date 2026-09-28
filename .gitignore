@@ -1,2 +1,7 @@
 # Executáveis
 *.exe
+
+# Configuração e cache do simulador winmips64
+# (o simulador cria-os sozinho; o .las guarda o último .s carregado)
+winmips64.ini
+winmips64.las
