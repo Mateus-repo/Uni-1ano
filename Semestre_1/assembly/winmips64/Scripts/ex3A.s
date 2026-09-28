@@ -16,4 +16,6 @@ main:
     sd r3, C(r0)
 
     sd r3, (r2) ; Coloco o resultado da soma de r3 no Data register
+
+    daddi r10, r0, 1
     halt
