@@ -10,12 +10,14 @@ struct valores
 };
 
 void obterValores(valores *v);
+int calcularSigma(int m, int n);
 
 int main(void)
 {
     valores v;
     obterValores(&v);
-
+    int resultado = calcularSigma(v.m, v.n);
+    printf("O resultado da soma sigma de %d a %d e igual a %d\n", v.m, v.n, resultado);
     return 0;
 }
 
@@ -44,4 +46,14 @@ void obterValores(valores *v)
             printf("---------------------------------\n\n");
         }
     } while (v->n < 0 || v->n < v->m);
+}
+
+int calcularSigma(int m, int n)
+{
+    int soma = 0;
+    for (int i = m; i <= n; i++)
+    {
+        soma += ((double)(2*i) / (5 + pow(i, 2)));
+    }
+    return soma;
 }
