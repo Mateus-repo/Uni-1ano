@@ -50,5 +50,6 @@ void pedirDados(int *num1, int *num2)
 void pedirOperador(char *operador)
 {
     printf("Escreva o operador - ");
-    *operador = getchar();
+    scanf("%*c");
+    scanf("%c", operador);
 }
