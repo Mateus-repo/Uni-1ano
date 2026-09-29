@@ -13,8 +13,6 @@ REM    - da para pesquisar por nome (ou parte do nome)
 REM ============================================================
 
 set "ROOT=%~dp0"
-call set "ROOTSEM=%%ROOT:~0,-1%%"
-call set "RLEN=%%ROOTSEM:~0,-1%%"
 set "LISTA=%TEMP%\pratica_cpp_lista.txt"
 set "PSALVA=%TEMP%\pratica_cpp_ps.txt"
 set "LIXO=%TEMP%\pratica_cpp_lixo.txt"
@@ -262,27 +260,27 @@ if exist "%PSALVA%" for %%A in ("%PSALVA%") do if %%~zA gtr 0 (
 )
 del /q "%PSALVA%" >nul 2>&1
 REM ---- sem powershell: o for /r, que e o que funciona sem /
-:procurar "*.cpp *.c *.cc *.cxx" "%LISTA%"
+call :procurar "*.cpp *.c *.cc *.cxx" "%LISTA%"
 exit /b 1
 
 REM ---- procura em todo o lado e guarda caminhos relativos em %2! ----
 REM      %1 = padrao, com * e ? se o ficheiro nao for exacto
+REM
+REM      NOTA: a escrita e feita numa subroutine e nao dentro do for. Um
+REM      bloco dentro de outro perde a redireccao, e o ficheiro fica vazio.
 :procurar
 if exist "%~2" del /q "%~2"
-for /r "%ROOT%" %%F in (%~1) do (
-    set "EXT=%%~xF"
-    set "SAIR="
-    if /i "!EXT!"==".cpp" set "SAIR=1"
-    if /i "!EXT!"==".c" set "SAIR=1"
-    if /i "!EXT!"==".cc" set "SAIR=1"
-    if /i "!EXT!"==".cxx" set "SAIR=1"
-    if defined SAIR (
-        set "LN=%%~fF"
-        if /i "!LN:~0,%RLEN%!"=="%ROOTSEM%" set "LN=!LN:~%RLEN%!"
-        echo(!LN!>>"%~2"
-    )
-)
+for /r "%ROOT%" %%F in (%~1) do call :mete "%%~fF" "%~2"
 call :ordenar "%~2"
+exit /b 0
+
+REM ---- junta um caminho a lista, tirando-lhe a raiz ----
+:mete
+set "EXT=%~x1"
+if /i not "!EXT!"==".cpp" if /i not "!EXT!"==".c" if /i not "!EXT!"==".cc" if /i not "!EXT!"==".cxx" exit /b 0
+set "REL=%~f1"
+set "REL=!REL:%ROOT%=!"
+>> "%~2" echo(!REL!
 exit /b 0
 
 REM ---- ordena a lista (a do for /r sai por ordem de pasta) ----
