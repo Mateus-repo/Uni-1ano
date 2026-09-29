@@ -26,6 +26,8 @@ void fazerCalculo(char operador, int num1, int num2)
         printf("Subtracao de %d e %d e igual a %d\n", num1, num2, num1 - num2);
         break;
     case '*':
+    case 'x':
+    case 'X':
         printf("Multiplicacao de %d e %d e igual a %d\n", num1, num2, num1 * num2);
         break;
     case '/':
@@ -48,5 +50,5 @@ void pedirDados(int *num1, int *num2)
 void pedirOperador(char *operador)
 {
     printf("Escreva o operador - ");
-    scanf("%c", operador);
+    *operador = getchar();
 }
