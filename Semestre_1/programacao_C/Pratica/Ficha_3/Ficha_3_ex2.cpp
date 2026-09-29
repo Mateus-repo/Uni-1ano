@@ -19,7 +19,12 @@ int main(void)
         scanf(" %c", &opcao);
         fflush(stdin);
         correrCiclo(opcao, &num, &total);
-        printf("A soma dos numeros de 1 a %d e igual a %d\n", num, total);
+        if (opcao != 'S' && opcao != 's')
+        {
+            printf("A soma dos numeros de 1 a %d e igual a %d\n", num, total);
+            printf("Prima qualquer tecla para continuar...\n");
+            getch();
+        }
     }while (opcao != 'S' && opcao != 's');
 }
 
@@ -52,12 +57,13 @@ void correrCiclo(char opcao, int *num, int *total)
 {
     int i = 1;
     *total = 0;
-    obterNum(num);
+    if(opcao != 'S' && opcao != 's')
+        obterNum(num);
     switch (opcao)
     {
         case 'W':
         case 'w':
-            while (i < *num)
+            while (i <= *num)
             {
                 *total += i;
                 i++;
