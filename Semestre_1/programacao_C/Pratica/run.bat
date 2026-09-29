@@ -25,6 +25,8 @@ echo  Compilador: !GXX!
 if defined GCC echo              e tambem: !GCC!
 
 call :escolher_ficheiro || goto :fim_erro
+REM ---- sem isto, um SRC vazio ia parar ao g++ e o erro era do linker ----
+if not defined SRC goto :fim_erro
 
 REM ---- parte o caminho em nome / extensao / directoria ----
 for %%F in ("%SRC%") do (
@@ -118,6 +120,8 @@ REM ============================================================
 call :criar_lista || goto :sem_lista
 call :contar "%LISTA%" N
 if "!N!"=="0" goto :sem_lista
+
+:escolhe_ficheiro
 call :menu_ficheiro
 if not defined OP goto :sem_escolha
 REM ---- tira os espacos, e repara se sobrou so whitespace ----
@@ -139,7 +143,7 @@ exit /b 1
 :op_invalida
 echo  Opcao invalida.
 set "OP="
-goto :menu_ficheiro
+goto :escolhe_ficheiro
 
 :sem_escolha
 echo.
@@ -152,7 +156,7 @@ echo.
 set "SRC="
 set "TYPED="
 set /p "TYPED=  Caminho (completo ou a partir desta pasta) ou nome do ficheiro: "
-if not defined TYPED goto :menu_ficheiro
+if not defined TYPED goto :escolhe_ficheiro
 REM ---- tira as aspas, caso as tenham colado ----
 set "TYPED=!TYPED:"=!"
 if exist "!TYPED!\" goto :nao_e_ficheiro
@@ -172,28 +176,28 @@ echo.
 if "!NX!"=="0" (
     echo  Nao encontrei "!TYPED!" nesta pasta nem nas subpastas.
     set "OP="
-    goto :menu_ficheiro
+    goto :escolhe_ficheiro
 )
 goto :escolher_resultado
 
 :nao_e_ficheiro
 echo  Isso e uma pasta, nao um ficheiro.
 set "OP="
-goto :menu_ficheiro
+goto :escolhe_ficheiro
 
 REM ---- pesquisar por nome, ou parte do nome ----
 :escolher_pesquisa
 echo.
 set "TERM="
 set /p "TERM=  Nome a procurar (pode ser parcial, ex: ex6): "
-if not defined TERM goto :menu_ficheiro
+if not defined TERM goto :escolhe_ficheiro
 call :procurar "*!TERM!*.*" "%LIXO%"
 call :contar "%LIXO%" NX
 echo.
 if "!NX!"=="0" (
     echo  Nada encontrado para "!TERM!".
     set "OP="
-    goto :menu_ficheiro
+    goto :escolhe_ficheiro
 )
 goto :escolher_resultado
 
@@ -218,10 +222,10 @@ echo.
 set "OP="
 set /p "OP=  Numero: "
 set "OP=!OP: =!"
-if not defined OP goto :menu_ficheiro
-echo !OP!| findstr /r /c:"^[0-9][0-9]*$" >nul || goto :menu_ficheiro
+if not defined OP goto :escolhe_ficheiro
+echo !OP!| findstr /r /c:"^[0-9][0-9]*$" >nul || goto :escolhe_ficheiro
 call :pega "%LIXO%" "!OP!"
-if not defined REL goto :menu_ficheiro
+if not defined REL goto :escolhe_ficheiro
 set "SRC=%ROOT%!REL!"
 exit /b 0
 
@@ -275,7 +279,12 @@ call :ordenar "%~2"
 exit /b 0
 
 REM ---- junta um caminho a lista, tirando-lhe a raiz ----
+REM
+REM      O if exist nao e redundante: o for /r devolve tambem ficheiros
+REM      que ja nao existem, quando se procura o mesmo nome varias vezes
+REM      com wildcards. Sem esta verificacao aparecem caminhos fantasma.
 :mete
+if not exist "%~f1" exit /b 0
 set "EXT=%~x1"
 if /i not "!EXT!"==".cpp" if /i not "!EXT!"==".c" if /i not "!EXT!"==".cc" if /i not "!EXT!"==".cxx" exit /b 0
 set "REL=%~f1"
