@@ -14,11 +14,11 @@ REM ============================================================
 
 set "ROOT=%~dp0"
 call set "ROOTSEM=%%ROOT:~0,-1%%"
-REM ---- nomes sem "TMP": o g++ usa a variavel de ambiente TMP para os
-REM      ficheiros temporarios dele, e nao pode ser uma pasta a menos ----
+call set "RLEN=%%ROOTSEM:~0,-1%%"
 set "LISTA=%TEMP%\pratica_cpp_lista.txt"
 set "PSALVA=%TEMP%\pratica_cpp_ps.txt"
 set "LIXO=%TEMP%\pratica_cpp_lixo.txt"
+set "ORDEM=%TEMP%\pratica_cpp_ordem.txt"
 
 call :limpa_temporarios
 call :check_tools || goto :fim_erro
@@ -118,15 +118,17 @@ REM ============================================================
 
 :escolher_ficheiro
 call :criar_lista || goto :sem_lista
-call :contar "!LISTA!" N
+call :contar "%LISTA%" N
 if "!N!"=="0" goto :sem_lista
 call :menu_ficheiro
+if not defined OP goto :sem_escolha
+REM ---- tira os espacos, e repara se sobrou so whitespace ----
 set "OP=!OP: =!"
 if not defined OP goto :sem_escolha
 if "!OP!"=="0" goto :escolher_manual
 if "!OP!"=="9" goto :escolher_pesquisa
 echo !OP!| findstr /r /c:"^[0-9][0-9]*$" >nul || goto :op_invalida
-call :pega "!LISTA!" "!OP!"
+call :pega "%LISTA%" "!OP!"
 if not defined REL goto :op_invalida
 set "SRC=%ROOT%!REL!"
 exit /b 0
@@ -166,8 +168,8 @@ if exist "%ROOT%!TYPED!" (
     exit /b 0
 )
 REM ---- nao existe onde foi escrito: procura em todo o lado ----
-call :procurar "!TYPED!"
-call :contar "!LIXO!" NX
+call :procurar "!TYPED!" "%LIXO%"
+call :contar "%LIXO%" NX
 echo.
 if "!NX!"=="0" (
     echo  Nao encontrei "!TYPED!" nesta pasta nem nas subpastas.
@@ -187,8 +189,8 @@ echo.
 set "TERM="
 set /p "TERM=  Nome a procurar (pode ser parcial, ex: ex6): "
 if not defined TERM goto :menu_ficheiro
-call :procurar "*!TERM!*.*"
-call :contar "!LIXO!" NX
+call :procurar "*!TERM!*.*" "%LIXO%"
+call :contar "%LIXO%" NX
 echo.
 if "!NX!"=="0" (
     echo  Nada encontrado para "!TERM!".
@@ -200,7 +202,7 @@ goto :escolher_resultado
 REM ---- da lista dos resultados a escolher um ----
 :escolher_resultado
 if "!NX!"=="1" (
-    call :pega "!LIXO!" 1
+    call :pega "%LIXO%" 1
     set "SRC=%ROOT%!REL!"
     exit /b 0
 )
@@ -220,7 +222,7 @@ set /p "OP=  Numero: "
 set "OP=!OP: =!"
 if not defined OP goto :menu_ficheiro
 echo !OP!| findstr /r /c:"^[0-9][0-9]*$" >nul || goto :menu_ficheiro
-call :pega "!LIXO!" "!OP!"
+call :pega "%LIXO%" "!OP!"
 if not defined REL goto :menu_ficheiro
 set "SRC=%ROOT%!REL!"
 exit /b 0
@@ -259,19 +261,50 @@ if exist "%PSALVA%" for %%A in ("%PSALVA%") do if %%~zA gtr 0 (
     exit /b 0
 )
 del /q "%PSALVA%" >nul 2>&1
-REM ---- sem powershell: e o dir /s, tirando o caminho da raiz ----
-dir /s /b /a-d "%ROOT%*.cpp" "%ROOT%*.c" "%ROOT%*.cc" "%ROOT%*.cxx" 2>nul | findstr /i /r /c:"\.\(cpp\|c\|cc\|cxx\)$" | call :tira_raiz > "%LISTA%"
-if exist "%LISTA%" for %%A in ("%LISTA%") do if %%~zA gtr 0 exit /b 0
+REM ---- sem powershell: o for /r, que e o que funciona sem /
+:procurar "*.cpp *.c *.cc *.cxx" "%LISTA%"
 exit /b 1
 
-REM ---- conta as linhas de uma lista, para !2! ----
-:contar
-set "VAR=%~2"
-for /f "usebackq delims=" %%F in ("%~1") do set /a !VAR!+=1
-if not defined %~2 set "%~2=0"
+REM ---- procura em todo o lado e guarda caminhos relativos em %2! ----
+REM      %1 = padrao, com * e ? se o ficheiro nao for exacto
+:procurar
+if exist "%~2" del /q "%~2"
+for /r "%ROOT%" %%F in (%~1) do (
+    set "EXT=%%~xF"
+    set "SAIR="
+    if /i "!EXT!"==".cpp" set "SAIR=1"
+    if /i "!EXT!"==".c" set "SAIR=1"
+    if /i "!EXT!"==".cc" set "SAIR=1"
+    if /i "!EXT!"==".cxx" set "SAIR=1"
+    if defined SAIR (
+        set "LN=%%~fF"
+        if /i "!LN:~0,%RLEN%!"=="%ROOTSEM%" set "LN=!LN:~%RLEN%!"
+        echo(!LN!>>"%~2"
+    )
+)
+call :ordenar "%~2"
 exit /b 0
 
-REM ---- guarda em REL a linha %~2! de uma lista ----
+REM ---- ordena a lista (a do for /r sai por ordem de pasta) ----
+:ordenar
+if not exist "%~1" exit /b 1
+for %%A in ("%~1") do if %%~zA gtr 0 (
+    sort "%~1" > "%ORDEM%" 2>nul
+    if exist "%ORDEM%" for %%B in ("%ORDEM%") do if %%~zB gtr 0 (
+        move /y "%ORDEM%" "%~1" >nul
+        exit /b 0
+    )
+    del /q "%ORDEM%" >nul 2>&1
+)
+exit /b 0
+
+REM ---- conta as linhas de uma lista, para o %2! ----
+:contar
+set /a %~2=0
+if exist "%~1" for /f "usebackq delims=" %%F in ("%~1") do set /a %~2+=1
+exit /b 0
+
+REM ---- guarda em REL a linha %2! de uma lista ----
 :pega
 set "REL="
 set /a K=0
@@ -281,26 +314,11 @@ for /f "usebackq delims=" %%F in ("%~1") do (
 )
 exit /b 0
 
-REM ---- procura em todo o lado, e guarda caminhos relativos ----
-:procurar
-if exist "%LIXO%" del /q "%LIXO%"
-dir /s /b /a-d "%ROOT%%~1" 2>nul | findstr /i /r /c:"\.\(cpp\|c\|cc\|cxx\)$" | call :tira_raiz > "%LIXO%"
-exit /b 0
-
-REM ---- tira a raiz ao caminho, para a lista ficar curta ----
-:tira_raiz
-setlocal EnableDelayedExpansion
-set "LN=%~1"
-if /i "!LN:~0,%RLEN%!"=="%ROOTSEM%\" set "LN=!LN:~%RLEN%!"
-echo(!LN!
-endlocal
-
 :abspath
 for %%F in ("%~1") do set "SRC=%%~fF"
 exit /b 0
 
 :check_tools
-call set "RLEN=%%ROOTSEM:~0,-1%%"
 set "GXX="
 set "GCC="
 for /f "delims=" %%I in ('where g++ 2^>nul') do if not defined GXX set "GXX=%%I"
@@ -315,7 +333,7 @@ echo         de comando nova, para o PATH actualizar.
 exit /b 1
 
 :limpa_temporarios
-del /q "%LISTA%" "%PSALVA%" "%LIXO%" >nul 2>&1
+del /q "%LISTA%" "%PSALVA%" "%LIXO%" "%ORDEM%" >nul 2>&1
 exit /b 0
 
 :limpa
