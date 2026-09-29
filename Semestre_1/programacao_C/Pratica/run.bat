@@ -14,8 +14,10 @@ REM ============================================================
 
 set "ROOT=%~dp0"
 call set "ROOTSEM=%%ROOT:~0,-1%%"
+REM ---- nomes sem "TMP": o g++ usa a variavel de ambiente TMP para os
+REM      ficheiros temporarios dele, e nao pode ser uma pasta a menos ----
 set "LISTA=%TEMP%\pratica_cpp_lista.txt"
-set "TMP=%TEMP%\pratica_cpp_tmp.txt"
+set "PSALVA=%TEMP%\pratica_cpp_ps.txt"
 set "LIXO=%TEMP%\pratica_cpp_lixo.txt"
 
 call :limpa_temporarios
@@ -251,12 +253,12 @@ REM ============================================================
 REM ---- lista todos os .cpp / .c da pasta e das subpastas ----
 :criar_lista
 if exist "%LISTA%" del /q "%LISTA%"
-powershell -NoProfile -Command "$r='%ROOT%'; Get-ChildItem -LiteralPath $r -Recurse -File | Where-Object { $_.Extension -in '.cpp','.c','.cc','.cxx' } | ForEach-Object { $_.FullName.Substring($r.Length) } | Sort-Object" > "%TMP%" 2>nul
-if exist "%TMP%" for %%A in ("%TMP%") do if %%~zA gtr 0 (
-    move /y "%TMP%" "%LISTA%" >nul
+powershell -NoProfile -Command "$r='%ROOT%'; Get-ChildItem -LiteralPath $r -Recurse -File | Where-Object { $_.Extension -in '.cpp','.c','.cc','.cxx' } | ForEach-Object { $_.FullName.Substring($r.Length) } | Sort-Object" > "%PSALVA%" 2>nul
+if exist "%PSALVA%" for %%A in ("%PSALVA%") do if %%~zA gtr 0 (
+    move /y "%PSALVA%" "%LISTA%" >nul
     exit /b 0
 )
-del /q "%TMP%" >nul 2>&1
+del /q "%PSALVA%" >nul 2>&1
 REM ---- sem powershell: e o dir /s, tirando o caminho da raiz ----
 dir /s /b /a-d "%ROOT%*.cpp" "%ROOT%*.c" "%ROOT%*.cc" "%ROOT%*.cxx" 2>nul | findstr /i /r /c:"\.\(cpp\|c\|cc\|cxx\)$" | call :tira_raiz > "%LISTA%"
 if exist "%LISTA%" for %%A in ("%LISTA%") do if %%~zA gtr 0 exit /b 0
@@ -313,7 +315,7 @@ echo         de comando nova, para o PATH actualizar.
 exit /b 1
 
 :limpa_temporarios
-del /q "%LISTA%" "%TMP%" "%LIXO%" >nul 2>&1
+del /q "%LISTA%" "%PSALVA%" "%LIXO%" >nul 2>&1
 exit /b 0
 
 :limpa
