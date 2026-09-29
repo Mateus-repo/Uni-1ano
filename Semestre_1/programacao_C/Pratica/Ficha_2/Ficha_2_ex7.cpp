@@ -37,6 +37,7 @@ void fazerCalculo(char operador, int num1, int num2)
         printf("Operador invalido\n");
         break;
     }
+    scanf("%*c");
 }
 
 void pedirDados(int *num1, int *num2)
