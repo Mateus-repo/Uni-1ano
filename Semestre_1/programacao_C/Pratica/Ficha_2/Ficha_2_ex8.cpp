@@ -41,3 +41,11 @@ void organizarArray(int num[], int max)
         }
     }
 }
+
+void mostrarArray(int num[], int max)
+{
+    for (int i = 0; i < max; i++)
+    {
+        printf("Numero %d: %d\n", i + 1, num[i]);
+    }
+}
