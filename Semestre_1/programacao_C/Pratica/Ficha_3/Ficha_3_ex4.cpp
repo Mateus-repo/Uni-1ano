@@ -25,9 +25,11 @@ int main(void)
 
 void pedirDados(registo_dados *dados)
 {
-    int i = 0;
     long long temp = 0;
-    do{
+    printf("Escreva quantos numeros inteiros deseja introduzir:\n");
+    scanf("%d", &dados->total);
+    for (int i = 0; i < dados->total; i++)
+    {
         printf("Escreva o %d numero - ", i + 1);
         scanf("%lld", &temp);
         if ((int)temp != 0)
@@ -35,12 +37,11 @@ void pedirDados(registo_dados *dados)
             dados->soma += temp;
             dados->total_negativos += (((int)temp < 0) ? 1 : 0);
             dados->total_positivos += (((int)temp > 0) ? 1 : 0);
-            i++;
-        }
-        else
+        }else
         {
             printf("\nEntrada invalida. %d\n", (int)temp);
+            i--;
         }
-    } while (temp != 0);
-    dados->total = i;
+    }
+    
 }
