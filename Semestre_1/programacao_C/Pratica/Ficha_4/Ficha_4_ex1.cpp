@@ -2,12 +2,17 @@
 #include <conio.h>
 
 int lerNumero();
-int leDadosRetangulo();
+void leDadosRetangulo(int *base, int *altura);
 int areaRetangulo(int base, int altura);
 
 int main(void)
 {
-    areaRetangulo(leDadosRetangulo());
+    int base, altura, area;
+
+    leDadosRetangulo(&base, &altura);
+    area = areaRetangulo(base, altura);
+
+    printf("A area do retangulo e %d\n", area);
     return 0;
 }
 
@@ -18,14 +23,12 @@ int lerNumero()
     return num;
 }
 
-int leDadosRetangulo()
+void leDadosRetangulo(int *base, int *altura)
 {
-    int base, altura;
     printf("Escreva a base do retangulo - ");
-    base = lerNumero();
+    *base = lerNumero();
     printf("Escreva a altura do retangulo - ");
-    altura = lerNumero();
-    return (base, altura);
+    *altura = lerNumero();
 }
 
 int areaRetangulo(int base, int altura)
