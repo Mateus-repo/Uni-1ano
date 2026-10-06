@@ -16,19 +16,25 @@ int main(void)
     return 0;
 }
 
-int lerNumero()
+int lerNumeroPositivo()
 {
     int num;
-    scanf("%d", &num);
+    do
+    {
+        scanf("%d", &num);
+        if (num < 0)
+        {
+            printf("Por favor, insira um numero positivo.\n");
+        }
+    } while (num < 0);
     return num;
 }
-
 void leDadosRetangulo(int *base, int *altura)
 {
     printf("Escreva a base do retangulo - ");
-    *base = lerNumero();
+    *base = lerNumeroPositivo();
     printf("Escreva a altura do retangulo - ");
-    *altura = lerNumero();
+    *altura = lerNumeroPositivo();
 }
 
 int areaRetangulo(int base, int altura)
