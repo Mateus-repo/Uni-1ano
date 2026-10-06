@@ -44,11 +44,9 @@ int main(void)
             printf("%d ^ %d = %.2f\n", n1, n2, potencia(n1, n2));
             break;
         case 5:
-            printf("%d ^ %d = %.2f\n", n2, n1, potencia(n2, n1));
-            break;
-        case 6:
             printf("%d + %d = %d\n", n1, n2, soma(n1, n2));
             printf("%d - %d = %d\n", n1, n2, subtracao(n1, n2));
+            printf("%d - %d = %d\n", n2, n1, subtracao(n2, n1));
             mostrarRaiz(n1);
             mostrarRaiz(n2);
             printf("%d ^ %d = %.2f\n", n1, n2, potencia(n1, n2));
@@ -80,8 +78,7 @@ int menu()
     printf(" 2 - Subtracao\n");
     printf(" 3 - Raiz quadrada\n");
     printf(" 4 - Potencia (n1 elevado a n2)\n");
-    printf(" 5 - Potencia (n2 elevado a n1)\n");
-    printf(" 6 - Todas as operacoes\n");
+    printf(" 5 - Todas as operacoes\n");
     printf(" 0 - Sair\n");
     printf(" Selecione opcao: ");
     scanf("%d", &op);
