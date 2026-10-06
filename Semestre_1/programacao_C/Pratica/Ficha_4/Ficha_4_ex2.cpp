@@ -80,10 +80,10 @@ char menu(int nTriangulo, int nRetangulo, int nCirculo, int nQuadrado)
 {
     char op;
     printf("\n Calculo de Areas\n");
-    printf(" Triangulo (N): %d\n", nTriangulo);
-    printf(" Retangulo (N): %d\n", nRetangulo);
-    printf(" Circulo   (N): %d\n", nCirculo);
-    printf(" Quadrado  (N): %d\n", nQuadrado);
+    printf(" Triangulo (Num Vezes): %d\n", nTriangulo);
+    printf(" Retangulo (Num Vezes): %d\n", nRetangulo);
+    printf(" Circulo   (Num Vezes): %d\n", nCirculo);
+    printf(" Quadrado  (Num Vezes): %d\n", nQuadrado);
     printf("\n OPCOES\n");
     printf(" (T)riangulo (R)etangulo (Q)uadrado (C)irculo (F)im\n");
     printf(" Selecione opcao: ");
