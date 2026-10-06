@@ -1,121 +1,112 @@
 #include <stdio.h>
-#include <conio.h>
+#include <ctype.h>
 #include <math.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
-void mostrarMenu();
-int lerNumeroPositivo();
-void leDadosRetangulo();
-void leDadosTriangulo();
-void leDadosQuadrado();
-void leDadosCirculo();
-int areaRetangulo(int base, int altura);
+int leNumero();
+char menu(int nTriangulo, int nRetangulo, int nCirculo, int nQuadrado);
+void leDadosTriangulo(int *base, int *altura);
 double areaTriangulo(int base, int altura);
+int areaRetangulo(int base, int altura);
 int areaQuadrado(int lado);
 double areaCirculo(int raio);
 
 int main(void)
 {
-    int op = 0;
+    char op;
+    int nTriangulo = 0, nRetangulo = 0, nCirculo = 0, nQuadrado = 0;
+    int base, altura, lado, raio;
+
     do
     {
-        mostrarMenu();
-        op = lerNumeroPositivo();
+        op = menu(nTriangulo, nRetangulo, nCirculo, nQuadrado);
+
         switch (op)
         {
-        case 1:
-            leDadosRetangulo();
+        case 'T':
+            leDadosTriangulo(&base, &altura);
+            printf("Area do triangulo: %.2f\n", areaTriangulo(base, altura));
+            nTriangulo++;
             break;
-        case 2:
-            leDadosTriangulo();
+        case 'R':
+            printf("Escreva a base do retangulo - ");
+            base = leNumero();
+            printf("Escreva a altura do retangulo - ");
+            altura = leNumero();
+            printf("Area do retangulo: %d\n", areaRetangulo(base, altura));
+            nRetangulo++;
             break;
-        case 3:
-            leDadosQuadrado();
+        case 'Q':
+            printf("Escreva o lado do quadrado - ");
+            lado = leNumero();
+            printf("Area do quadrado: %d\n", areaQuadrado(lado));
+            nQuadrado++;
             break;
-        case 4:
-            leDadosCirculo();
+        case 'C':
+            printf("Escreva o raio do circulo - ");
+            raio = leNumero();
+            printf("Area do circulo: %.2f\n", areaCirculo(raio));
+            nCirculo++;
             break;
-        case 5:
+        case 'F':
             printf("A sair...\n");
             break;
         default:
             printf("Opcao invalida!\n");
         }
-    } while (op != 5);
+    } while (op != 'F');
+
     return 0;
 }
 
-void mostrarMenu()
-{
-    printf("\nEscolha uma opcao:\n");
-    printf("1 - Calcular area do retangulo\n");
-    printf("2 - Calcular area do triangulo\n");
-    printf("3 - Calcular area do quadrado\n");
-    printf("4 - Calcular area do circulo\n");
-    printf("5 - Sair\n");
-}
-
-int lerNumeroPositivo()
+int leNumero()
 {
     int num;
     do
     {
         scanf("%d", &num);
-        if (num < 0)
+        if (num <= 0)
         {
-            printf("Por favor, insira um numero positivo.\n");
+            printf("Por favor, insira um numero inteiro positivo: ");
         }
-    } while (num < 0);
+    } while (num <= 0);
     return num;
 }
 
-void leDadosRetangulo()
+char menu(int nTriangulo, int nRetangulo, int nCirculo, int nQuadrado)
 {
-    int base, altura;
-    printf("Escreva a base do retangulo - ");
-    base = lerNumeroPositivo();
-    printf("Escreva a altura do retangulo - ");
-    altura = lerNumeroPositivo();
-    printf("Area do retangulo: %d\n", areaRetangulo(base, altura));
+    char op;
+    printf("\n Calculo de Areas\n");
+    printf(" Triangulo (N): %d\n", nTriangulo);
+    printf(" Retangulo (N): %d\n", nRetangulo);
+    printf(" Circulo   (N): %d\n", nCirculo);
+    printf(" Quadrado  (N): %d\n", nQuadrado);
+    printf("\n OPCOES\n");
+    printf(" (T)riangulo (R)etangulo (Q)uadrado (C)irculo (F)im\n");
+    printf(" Selecione opcao: ");
+    scanf(" %c", &op);
+    return toupper(op);
 }
 
-void leDadosTriangulo()
+void leDadosTriangulo(int *base, int *altura)
 {
-    int base, altura;
     printf("Escreva a base do triangulo - ");
-    base = lerNumeroPositivo();
+    *base = leNumero();
     printf("Escreva a altura do triangulo - ");
-    altura = lerNumeroPositivo();
-    printf("Area do triangulo: %.2f\n", areaTriangulo(base, altura));
-}
-
-void leDadosQuadrado()
-{
-    int lado;
-    printf("Escreva o lado do quadrado - ");
-    lado = lerNumeroPositivo();
-    printf("Area do quadrado: %d\n", areaQuadrado(lado));
-}
-
-void leDadosCirculo()
-{
-    int raio;
-    printf("Escreva o raio do circulo - ");
-    raio = lerNumeroPositivo();
-    printf("Area do circulo: %.2f\n", areaCirculo(raio));
-}
-
-int areaRetangulo(int base, int altura)
-{
-    return base * altura;
+    *altura = leNumero();
 }
 
 double areaTriangulo(int base, int altura)
 {
     return (base * altura) / 2.0;
+}
+
+int areaRetangulo(int base, int altura)
+{
+    return base * altura;
 }
 
 int areaQuadrado(int lado)
