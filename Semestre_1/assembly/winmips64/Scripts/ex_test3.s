@@ -81,7 +81,7 @@ MSGM: .asciiz "O maior e: "
 	; Este j e' obrigatorio. Sem ele, a execucao acabava aqui, caia no
 	; bloco Else e imprimia "Iguais!O maior e: ..." - os dois textos
 	; seguidos. Em assembly um ramo tem sempre de saltar por cima do
-	; outro, senao os doisexecutam.
+	; outro, senao os dois executam.
 
 Else:
 	daddi r8, r0, MSGM     ; mostrar "O maior e: "

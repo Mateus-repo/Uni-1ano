@@ -69,7 +69,7 @@ msg:    .asciiz "Hello World\n"
 	; o codigo no CR.
 	; Repara que o DR leva um ENDERECO (o que o assembler calculou para o
 	; rotulo "msg") e nao as letras. As letras continuam no sitio onde
-	; estavam, e o simulador vai la buscar quando o CR=4 lha diz o que
+	; estavam, e o simulador vai la buscar quando o CR=4 lhe diz o que
 	; aquilo e'. E' a diferenca entre "o que mostrar" e "onde esta' o que
 	; mostrar".
 

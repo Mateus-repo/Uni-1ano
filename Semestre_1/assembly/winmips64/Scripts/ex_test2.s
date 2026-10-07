@@ -30,7 +30,7 @@
 ;
 ; NOTA 2, e esta e' a pegadinha deste exercicio: o programa mostra
 ; a - b, e nao b - a. Se der -2 em vez de 2, o codigo esta' certo e
-; foi a conta que se leu ao contrary. Vale a pena trocar os operandos do
+; foi a conta que se leu ao contrario. Vale a pena trocar os operandos do
 ; dsub para confirmar.
 
 	.data

@@ -5,3 +5,11 @@
 # (o simulador cria-os sozinho; o .las guarda o último .s carregado)
 winmips64.ini
 winmips64.las
+
+# Saída do asm.exe do winmips64
+# O asm.exe deixa dois ficheiros ao lado de cada .s: o .cod (a listagem
+# da montagem, com os endereços e o código gerado) e o .dat (o binário).
+# Nenhum dos dois é fonte - são artefactos, e cada vez que se compila
+# um exercício aparecem. Só entram no git por engano.
+*.cod
+*.dat
