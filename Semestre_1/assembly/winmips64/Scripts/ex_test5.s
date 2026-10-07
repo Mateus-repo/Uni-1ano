@@ -17,7 +17,7 @@ MSGERRO: .asciiz "Tente novamente \n"
 		sd r9, (r1)
 		ld r3, (r2)
 		
-		slti r4, 0, r3
+		slti r4, r3, 0
 		beqz r4, ERRO
 		
 	FUNCAO:
@@ -25,7 +25,7 @@ MSGERRO: .asciiz "Tente novamente \n"
 		sd r5, (r2)
 		daddi r9, r0, 2
 		sd r9, (r1)
-		beq r3, r5, FIM
+		beq r3, r5, FUNCAO
 		j FIM
 	ERRO:
 		daddi r8, r0, MSGERRO
