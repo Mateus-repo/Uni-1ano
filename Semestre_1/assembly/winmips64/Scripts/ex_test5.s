@@ -2,7 +2,8 @@
 CR: .word32 0x10000
 DR: .word32 0x10008
 MSGNUM: .asciiz "Escreva um numero positivo: "
-MSGERRO: .asciiz "Tente novamente "
+MSGERRO: .ascii "Tente novamente"
+         .byte 13, 0
 
 	.text
 	lwu r1, CR(r0)
@@ -34,6 +35,8 @@ FUNCAO:
 	j FUNCAO                 ; volta ao topo              <-- NOVO
 
 ERRO:
+	daddi r9, r0, 6
+	sd r9, (r1)            ; limpa o terminal
 	daddi r8, r0, MSGERRO
 	sd r8, (r2)
 	daddi r9, r0, 4
