@@ -507,8 +507,13 @@ FimWhile:
 ```asm
 Faz:
 op1
-bneq r1, r2, Faz     ; repete enquanto forem diferentes
+bne r1, r2, Faz      ; repete enquanto forem diferentes
 ```
+
+> **Atenção: é `bne`, não `bneq`.** O `Estruturas de controlo-ASM.pdf` escreve
+> `bneq`, e essa linha foi copiada daí — mas **`bneq` não existe no MIPS**. O
+> `ISET.TXT` lista `beq`, `bne`, `beqz` e `bnez`, e mais nada. Escrever
+> `bneq` chumba o assembler.
 
 ### 8.7 `switch`
 
@@ -627,7 +632,7 @@ Em 8 bits:
 | **Registers** | valores dos registos |
 | **Statistics** | ciclos, instruções, CPI, stalls |
 | **Cycles** | diagrama temporal do pipeline |
-| **Terminal** | terminal de I/O, com algum graphical |
+| **Terminal** | terminal de I/O, com alguma capacidade gráfica |
 
 Cada posição de memória de dados ocupa 64 bits (16 hex), por isso o endereço
 incrementa de 8 em 8. Cada instrução ocupa 4 B.
@@ -664,7 +669,7 @@ que ficam presas atrás ficam a **cinzento**.
 |---|---|
 | **Reset MIPS64** (`Ctrl+R`) | volta ao início do código, **não** apaga a memória |
 | **Reload** (`F10`) | volta ao início do código **e apaga a memória** |
-| **Full Reset** (`Ctrl+F`) | reinicia tudo; para reexecutar o mesmo código é preciso F10 e depois F7/F4 |
+| **Full Reset** (`Ctrl+F`) | reinicia tudo; é preciso voltar a carregar o programa |
 
 > O tutorial em inglês descreve o **Full Reset** como o que apaga a memória de
 > dados, e o **Reload** como "reiniciar a simulação". A versão portuguesa
@@ -691,7 +696,7 @@ Em `Configure`: **Multi-Step**, **Enable Forwarding** (deve estar ligado),
 |---|---|---|
 | 1a | `c = a + b` com `a=10, b=8` | `ex1A.s` |
 | 1b | `c = a + b + z` | `ex1A.s` |
-| 2a/2b | Trocar duas variáveis em memória | `ex2A.s` — tem o bug da versão 2b; ver §12.1 |
+| 2a/2b | Trocar duas variáveis em memória | `ex2A.s` — tinha o bug da versão 2b; ver §12.1 |
 | 3 | Enviar o resultado para o terminal | `ex3A.s` |
 | 4 | Obter os valores do utilizador | `ex4A.s` |
 | 5a | Mostrar "Hello World!" | `ex5A.s` |
@@ -748,9 +753,9 @@ sd r5, B(r0)    ; B = 10  ✓  (r5 tem o valor que estava em A)
 
 Conferir as três versões:
 
-| Versão | Barulho | Stores | Resultado |
+| Versão | Troca de registos | Stores | Resultado |
 |---|---|---|---|
-| Ex 2a (PDF) | nenhum | `sd r4,B` / `sd r5,A` | troca correcta |
+| Ex 2a (PDF) | nenhuma | `sd r4,B` / `sd r5,A` | troca correcta |
 | Ex 2b (PDF) | 3 `dadd` | `sd r4,A` / `sd r5,B` | troca correcta |
 | `ex2A.s` **antes** | 3 `dadd` | `sd r4,B` / `sd r5,A` | **não fazia nada** |
 | `ex2A.s` **agora** | 3 `dadd` | `sd r4,A` / `sd r5,B` | troca correcta |
@@ -774,10 +779,11 @@ Conferir as três versões:
 |---|---|---|
 | `TabelaMIPS64.pdf` | `dsll R1, R2, #3` → `R1 = R2 << 2` | o exemplo e a fórmula não batem: tem de ser `<< 3` |
 | `TabelaMIPS64.pdf` | `cvt.w.d` → "convert 32-bit integer to floating-point" | está ao contrário: `cvt.w.d` converte de double para inteiro de 32 bits |
-| `TabelaMIPS64.pdf` | `xori` aparece **duas** vezes na lista | a segunda devia ser outra instrução qualquer; é duplicado da linha anterior |
+| `TabelaMIPS64.pdf` | `xori` aparece **duas** vezes na lista | duplicado da linha anterior |
 | `Bases Numericas.pdf` | tabela de 4 bases, linha do 8: binário `1001` | é `1000` — `1001` é 9 e já aparece na linha seguinte |
 | `Suporte Ex 01-04.pdf` | na solução do **ex4a** ficam `ld r4,A(r0)` e `ld r5,B(r0)` depois das leituras do teclado | código morto que **sobrescreve** os valores lidos com 10 e 8. O `ex4A.s` local acertou ao removê-los |
-| `Tamanho dos dados.pdf` | `.word` em MIPS32 marcado como 32 bits | na verdade `.word` são 64 bits nas duas arquitecturas; em MIPS32 o `.word32` é que é de 32 |
+| `Tamanho dos dados.pdf` | `.word` em MIPS32 marcado como 32 bits | em MIPS32 o `.word` é que é de 32 bits |
+| `Estruturas de controlo-ASM.pdf` | o `do...while` usa `bneq r1, r2, Faz` | **`bneq` não é uma instrução do MIPS** — é `bne`. O `ISET.TXT` só lista `beq`, `bne`, `beqz` e `bnez`. Este guia já traz o corrigido (§8.6) |
 
 ### 12.3 Diferenças entre documentos
 
