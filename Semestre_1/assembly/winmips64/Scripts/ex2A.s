@@ -16,20 +16,40 @@
 ; conheca. O que o computador faz e' copiar o valor que esta' num sitio
 ; para outro sitio.
 ;
-; E' o problema classico da troca. Se se fizesse assim:
+; O problema real da troca: cada instrucao tem UM destino so. Nao existe
+; nenhuma instrucao que troque dois sitios, e nao existe o "A = B" que em
+; C resolve a troca numa linha. O unico que ha e' copiar.
 ;
-;     sd r4, B(r0)     ; B passa a valer 10 (o antigo valor de A)
-;     sd r5, A(r0)     ; A passa a valer 8 (o antigo valor de B)
+; E' por isso que o exercicio aparece duas vezes no enunciado, com duas
+; solucoes. A diferenca entre elas e' o registo que se repete:
 ;
-; a segunda linha copia o valor de r5 para A. Mas o r5 foi posto para o
-; registo ANTES, e se escrever-mos em B antes, o valor de A original
-; ja nao esta' la - ja foi sobrescrito. O resultado seria A=8 e B=8:
-; o 10 desapareceu.
+;   Exercicio 2a - dois registos, sem mexer neles:
 ;
-; A solucao e' o que este programa faz: guardar um dos valores num
-; registo que nao seja A nem B antes de mexer em qualquer um deles.
-; Como os registos sao tres (r3, r4, r5) e os valores sao dois, ha
-; sempre um registo de sobra para servir de "caixa temporaria".
+;       ld r4, A(r0)     ; r4 = 10
+;       ld r5, B(r0)     ; r5 = 8
+;       sd r4, B(r0)     ; B = 10   <- o r4 ainda tem o 10
+;       sd r5, A(r0)     ; A = 8    <- o r5 ainda tem o 8
+;
+;     Aqui a troca e' uma copia cruzada e simples. Funciona porque os DOIS
+;     valores foram lidos ANTES de qualquer escrita: no momento do store o
+;     r4 ainda vale 10 e o r5 ainda vale 8.
+;
+;   Exercicio 2b - trocar os registos eles proprios, com um terceiro:
+;
+;       dadd r3, r4, r0  ; r3 = r4     (guarda A a parte)
+;       dadd r4, r5, r0  ; r4 = r5     (r4 passa a ter o valor de B)
+;       dadd r5, r3, r0  ; r5 = r3     (r5 passa a ter o valor de A)
+;
+;     Aqui o objectivo e' que os REGISTOS fiquem trocados, e as dadd
+;     deixam-nos efectivamente trocados. Por isso o store tem de ser ao
+;     contrario da 2a:
+;
+;       sd r4, A(r0)     ; A = 8       (r4 tem o valor que estava em B)
+;       sd r5, B(r0)     ; B = 10      (r5 tem o valor que estava em A)
+;
+; ESTE FICHEIRO E' O CASO 2b. E o erro classico e' fazer o store da 2a
+; depois das dadd da 2b: o codigo corre todo, nao falha nada, e no fim
+; A=10 e B=8 como estavam no principio - ou seja, nao troca nada.
 ; -----------------------------------------------------------------------------
 
 	.data
@@ -57,17 +77,32 @@ main:
 	; linhas seria "int r3 = r4;", "int r4 = r5;" e "int r5 = r3;".
 	; Somar o r0 e' a forma de "copiar" um registo. Existe o "move" como
 	; pseudo-instrucao em MIPS, mas o winmips64 nao a lista no ISET.TXT,
-	; e somar o zero resulta sempre e resulta em todo o lado.
+	; e somar o zero resulta em todo o lado.
 	; O truque do r3 e' o seguinte: r3 e' a "caixa temporaria". Copia-se
 	; A para la, para se ter o valor do A seguro, e depois usa-se essa
 	; copia para repor o valor de A no fim. Sem o r3 a troca nao
 	; funcionaria, como se explica no bloco de comentacao de cima.
 
-	sd r4, B(r0)     ; guarda r4 (8) em B. Agora B = 8, que ja era o valor.
-	sd r5, A(r0)     ; guarda r5 (10) em A. Agora A = 10, que era o de B.
+	sd r4, A(r0)     ; guarda r4 (8) em A. Agora A = 8, que era o valor de B.
+	sd r5, B(r0)     ; guarda r5 (10) em B. Agora B = 10, que era o valor de A.
 	; Estes sd sao as duas ultimas instrucoes que mexem na memoria. E so
 	; agora e' seguro escrever: os dois valores estao salvos nos registos,
 	; portanto pode-se sobrescrever A e B sem perder nada.
+	; Repara que o destino de cada registo esta TROCADO. Depois das tres
+	; dadd de cima, o r4 ja tem o valor que estava em B (o 8) e o r5 tem o
+	; valor que estava em A (o 10). Por isso o r4 vai para A e o r5 vai
+	; para B.
+	; E' aqui que esta a armadilha deste exercicio: se se escrever
+	;
+	;     sd r4, B(r0)     ; B = 8  (ja era 8, nao muda nada)
+	;     sd r5, A(r0)     ; A = 10 (ja era 10, nao muda nada)
+	;
+	; o programa corre todo, nao da erro nenhum, e no fim A=10 e B=8
+	; como estavam no principio. Ou seja: nao troca nada. E' o mesmo erro
+	; que aparece no enunciado do exercicio 2a, que nao tem as dadd - ai
+	; a ordem "r4 para B, r5 para A" e' a correcta, porque os registos
+	; ainda tem os valores originais. Com as dadd pelo meio, tem de ser ao
+	; contrario.
 	; (o sd e' store doubleword: copia um registo para a memoria, o
 	;  inverso do ld)
 
