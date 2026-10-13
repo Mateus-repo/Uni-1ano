@@ -151,13 +151,20 @@ int zerosReais(double a, double b, double c, double *x1, double *x2)
 }
 
 void calcularZerosReais(){
-    printf("Escreva o valor de a - ");
-    double a = (double)leNumero();
+    double a, b, c, x1, x2;
+    do
+    {
+        printf("Escreva o valor de a - ");
+        a = (double)leNumero();
+        if (a == 0)
+        {
+            printf("O valor de a nao pode ser zero. Tente novamente.\n");
+        }
+    }while(a == 0);   
     printf("Escreva o valor de b - ");
-    double b = (double)leNumero();
+    b = (double)leNumero();
     printf("Escreva o valor de c - ");
-    double c = (double)leNumero();
-    double x1, x2;
+    c = (double)leNumero();
     int numZeros = zerosReais(a, b, c, &x1, &x2);
     if (numZeros == 0)
     {
@@ -171,4 +178,4 @@ void calcularZerosReais(){
     {
         printf("Existem dois zeros reais: %.2lf e %.2lf\n", x1, x2);
     }
-}
+    }

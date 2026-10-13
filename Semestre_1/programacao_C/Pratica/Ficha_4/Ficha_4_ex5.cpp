@@ -21,8 +21,14 @@ double zerosReais(double a, double b, double c, double *x1, double *x2);
             scanf("%d", &op);
             if (op == 1)
             {
-                printf("Escreva o valor de a - ");
-                a = leNumero();
+                do{
+                    printf("Escreva o valor de a - ");
+                    a = leNumero();
+                    if(a == 0)
+                    {
+                        printf("O valor de a nao pode ser zero. Tente novamente.\n");
+                    }  
+                }while(a == 0);
                 printf("Escreva o valor de b - ");
                 b = leNumero();
                 printf("Escreva o valor de c - ");
