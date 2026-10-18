@@ -27,15 +27,12 @@ int main(void)
         switch (op)
         {
         case 'T':
-            leDadosTriangulo(&base, &altura);
+            leLados(&base, &altura);
             printf("Area do triangulo: %.2f\n", areaTriangulo(base, altura));
             nTriangulo++;
             break;
         case 'R':
-            printf("Escreva a base do retangulo - ");
-            base = leNumero();
-            printf("Escreva a altura do retangulo - ");
-            altura = leNumero();
+            leLados(&base, &altura);
             printf("Area do retangulo: %d\n", areaRetangulo(base, altura));
             nRetangulo++;
             break;
@@ -91,11 +88,11 @@ char menu(int nTriangulo, int nRetangulo, int nCirculo, int nQuadrado)
     return toupper(op);
 }
 
-void leDadosTriangulo(int *base, int *altura)
+void leLados(int *base, int *altura)
 {
-    printf("Escreva a base do triangulo - ");
+    printf("Escreva a base - ");
     *base = leNumero();
-    printf("Escreva a altura do triangulo - ");
+    printf("Escreva a altura - ");
     *altura = leNumero();
 }
 
