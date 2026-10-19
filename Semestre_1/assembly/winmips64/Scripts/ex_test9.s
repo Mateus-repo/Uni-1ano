@@ -57,29 +57,31 @@ MSGPEDEINT: .asciiz "Escreve um inteiro: "
         sd r5, Y(r0)
         sd r6, W(r0)
 
-        daddi r8, r0, S
-        sd r8, (r2)
-        daddi r9, r0, 4
-        sd r9, (r1)
+        ; ---- mostrar S (sem sinal, código 1) ----
+        ld    r8, S(r0)
+        sd    r8, (r2)
+        daddi r9, r0, 1 ; código 1 = inteiro sem sinal
+        sd    r9, (r1)
 
-        daddi r8, r0, D
-        sd r8, (r2)
-        daddi r9, r0, 4
-        sd r9, (r1)
+        ; ---- mostrar D (com sinal, código 2) ----
+        ld    r8, D(r0)
+        sd    r8, (r2)
+        daddi r9, r0, 2 ; código 2 = inteiro com sinal
+        sd    r9, (r1)
 
-        daddi r8, r0, X
-        sd r8, (r2)
-        daddi r9, r0, 4
-        sd r9, (r1)
+        ; ---- mostrar X (já rodado) ----
+        ld    r8, X(r0)
+        sd    r8, (r2)
+        sd    r9, (r1)          ; r9 continua a ser 2
 
-        daddi r8, r0, Y
-        sd r8, (r2)
-        daddi r9, r0, 4
-        sd r9, (r1)
+        ; ---- mostrar Y ----
+        ld    r8, Y(r0)
+        sd    r8, (r2)
+        sd    r9, (r1)
 
-        daddi r8, r0, W
-        sd r8, (r2)
-        daddi r9, r0, 4
-        sd r9, (r1)
+        ; ---- mostrar W ----
+        ld    r8, W(r0)
+        sd    r8, (r2)
+        sd    r9, (r1)
     END:
         halt
