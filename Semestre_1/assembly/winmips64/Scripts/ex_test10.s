@@ -1,13 +1,13 @@
     .data
 CR:   .word32 0x10000
 DR:   .word32 0x10008
-P: .word32 0
-Q: .word32 0
-R: .word32 0
-T: .word32 0
-M: .word32 0
-N: .word32 0
-F: .word32 0
+P: .word 0
+Q: .word 0
+R: .word 0
+T: .word 0
+M: .word 0
+N: .word 0
+F: .word 0
 MSGPEDEINT: .asciiz "Escreve um inteiro: "
 
     .text
