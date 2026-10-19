@@ -15,58 +15,68 @@ MSGPEDEINT: .asciiz "Escreve um inteiro: "
     lwu r2, DR(r0)         ; r2 = endereço do DATA
 
     MAIN:
+        ; ---- ler P ----
         daddi r8, r0, MSGPEDEINT
         sd r8, (r2)
         daddi r9, r0, 4         ; código 4 = mostrar string
         sd r9, (r1)
 
-        daddi r9, r0, 8
+        daddi r9, r0, 8         ; código 8 = ler do teclado
         sd r9, (r1)
-        ld r4, (r2)          ; r4 = P
+        ld r4, (r2)             ; r4 = P
         sd r4, P(r0)
 
+        ; ---- ler Q ----
         daddi r8, r0, MSGPEDEINT
         sd r8, (r2)
-        daddi r9, r0, 4         ; código 4 = mostrar string
+        daddi r9, r0, 4
         sd r9, (r1)
 
         daddi r9, r0, 8
         sd r9, (r1)
-        ld r5, (r2)          ; r5 = Q
+        ld r5, (r2)             ; r5 = Q
         sd r5, Q(r0)
 
+        ; ---- ler R ----
         daddi r8, r0, MSGPEDEINT
         sd r8, (r2)
-        daddi r9, r0, 4         ; código 4 = mostrar string
+        daddi r9, r0, 4
         sd r9, (r1)
 
         daddi r9, r0, 8
         sd r9, (r1)
-        ld r6, (r2)          ; r6 = R
+        ld r6, (r2)             ; r6 = R
         sd r6, R(r0)
 
+        ; ---- ler T ----
         daddi r8, r0, MSGPEDEINT
         sd r8, (r2)
-        daddi r9, r0, 4         ; código 4 = mostrar string
+        daddi r9, r0, 4
         sd r9, (r1)
 
         daddi r9, r0, 8
         sd r9, (r1)
-        ld r7, (r2)          ; r7 = T
+        ld r7, (r2)             ; r7 = T
         sd r7, T(r0)
 
-        dadd r3, r4, r5
-        sd r3, M(r0)
-        dadd r3, r6, r7
-        sd r3, N(r0)
+        ; ---- M = P + Q ; N = R + T ----
+        dadd  r10, r4, r5       ; r10 = M
+        sd    r10, M(r0)
+        dadd  r11, r6, r7       ; r11 = N
+        sd    r11, N(r0)
 
-        dsub r3, M(r0), N(r0)
-        sd r3, F(r0)
+        ; ---- F = M - N ----
+        dsub  r12, r10, r11
+        sd    r12, F(r0)
 
-        dadd r3, r0, M(r0)
-        sd N(r0), M(r0)
-        sd r3, N(r0)
+        ; ---- trocar M e N (r3 = auxiliar) ----
+        dadd  r3, r10, r0       ; r3 = M
+        dadd  r10, r11, r0      ; r10 = N
+        dadd  r11, r3, r0       ; r11 = M antigo
+        sd    r10, M(r0)        ; M = N antigo
+        sd    r11, N(r0)        ; N = M antigo
 
+        ; ---- mostrar F, M, N (código 2) ----
         daddi r9, r0, 2         ; código 2 = inteiro com sinal
 
         ld r8, F(r0)
