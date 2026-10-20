@@ -73,12 +73,16 @@ void mostrarDados(const int notas[], int qtd)
 
 float calcularMedia(const int notas[], int qtd)
 {
-    int i, soma = 0;
-    for (i = 0; i < qtd; i++)
-    {
-        soma += notas[i];
+    if (qtd!=0){
+        int i, soma = 0;
+        for (i = 0; i < qtd; i++)
+        {
+            soma += notas[i];
+        }
+        return (float)soma / qtd;
     }
-    return (float)soma / qtd;
+    printf("\n ERRO! NAO FOI POSSIVEL CALCULAR A MEDIA.\n");
+    return -1;
 }
 
 void alterarNota(int notas[], int qtd)
