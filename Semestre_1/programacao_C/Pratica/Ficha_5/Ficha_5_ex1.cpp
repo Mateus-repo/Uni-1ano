@@ -4,13 +4,15 @@
 #define MAX_INSCRITOS 25
 #define NOTA_MIN 0
 #define NOTA_MAX 20
+#define NOTA_POSITIVA 10
 
 int lerInteiro(int limMin, int limMax);
 int lerQuantidadeAvaliados(void);
 void lerNotas(int notas[], int qtd);
 void mostrarDados(const int notas[], int qtd);
-float calcularMedia(const int notas[], int qtd);
-void alterarNota(int notas[], int qtd);
+float calculaMedia(const int notas[], int qtd);
+void alteraNota(int notas[], int qtd);
+void notasPositivas(const int notas[], int qtd);
 
 int main(void)
 {
@@ -21,11 +23,13 @@ int main(void)
     lerNotas(vetorNotasFinais, qtdAvaliados);
 
     mostrarDados(vetorNotasFinais, qtdAvaliados);
-    printf("\nMedia das classificacoes: %.2f\n", calcularMedia(vetorNotasFinais, qtdAvaliados));
+    printf("\nMedia das classificacoes: %.2f\n", calculaMedia(vetorNotasFinais, qtdAvaliados));
 
-    alterarNota(vetorNotasFinais, qtdAvaliados);
+    alteraNota(vetorNotasFinais, qtdAvaliados);
     mostrarDados(vetorNotasFinais, qtdAvaliados);
-    printf("\nNova media das classificacoes: %.2f\n", calcularMedia(vetorNotasFinais, qtdAvaliados));
+    printf("\nNova media das classificacoes: %.2f\n", calculaMedia(vetorNotasFinais, qtdAvaliados));
+
+    notasPositivas(vetorNotasFinais, qtdAvaliados);
 
     return 0;
 }
@@ -71,9 +75,10 @@ void mostrarDados(const int notas[], int qtd)
     }
 }
 
-float calcularMedia(const int notas[], int qtd)
+float calculaMedia(const int notas[], int qtd)
 {
-    if (qtd!=0){
+    if (qtd != 0)
+    {
         int i, soma = 0;
         for (i = 0; i < qtd; i++)
         {
@@ -85,7 +90,7 @@ float calcularMedia(const int notas[], int qtd)
     return -1;
 }
 
-void alterarNota(int notas[], int qtd)
+void alteraNota(int notas[], int qtd)
 {
     int estudante;
 
@@ -94,4 +99,29 @@ void alterarNota(int notas[], int qtd)
 
     printf("Nova nota do estudante %d\n", estudante);
     notas[estudante - 1] = lerInteiro(NOTA_MIN, NOTA_MAX);
+}
+
+void notasPositivas(const int notas[], int qtd)
+{
+    int i, positivas = 0;
+
+    printf("\n--- Notas positivas ---\n");
+    for (i = 0; i < qtd; i++)
+    {
+        if (notas[i] >= NOTA_POSITIVA)
+        {
+            printf("Estudante %d: %d\n", i + 1, notas[i]);
+            positivas++;
+        }
+    }
+
+    if (positivas == 0)
+    {
+        printf("Nenhum estudante obteve nota positiva.\n");
+    }
+
+    if (qtd != 0)
+    {
+        printf("\nPercentagem de notas positivas: %.2f%%\n", (float)positivas / qtd * 100);
+    }
 }
